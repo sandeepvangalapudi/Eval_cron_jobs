@@ -1,0 +1,83 @@
+dataset: SEP10_VA_CHUNKS_256_0_OVERLAP_BGE
+context_combiner:
+  use_adj_chunks: false  #True
+
+vectorstore: weaviate_vectorstore
+embedding: sky   #openai  #dkubex #sky #huggingface
+search: vector_search
+
+query:
+  post_processor:
+    - acronym_expander
+    - query_rewrite
+
+parallel_query:
+  batch_size: 32
+
+acronym_expander:
+  acr_file: "/home/sandeep-vangalapudi/cron_job_evals/cache_disabled/va_acronym.json"
+
+query_rewrite:
+  confidence_threshold: 1
+  system_prompt: "/home/sandeep-vangalapudi/cron_job_evals/cache_disabled/va_system_prompt.txt"
+  user_prompt: "/home/sandeep-vangalapudi/cron_job_evals/cache_disabled/nv-usr-prompt-new.yaml"
+
+synthesizer:
+  use_adjacent_chunks: True
+  chat_memory_tokens: 6000
+  prompt: |
+      "Your job is to extract relevant context for the user's question. "
+      "Never directly answer yes or no, but only provide policy or procedural information from relevant sections "
+      "Do not assume anything. Use the context and not any prior learnings. "
+      "Please limit the output to 100 words. "
+      "Please do not include any explanatory logic or notes. "
+      "For each part of your answer, indicate which sources most support it "
+      "via valid citation markers at the end of sentences, like (Example2012). "
+      "Note that pregnancy is not a QLE, but child birth is a QLE. \n"
+      "Include sources used at the end of the response"
+      "Include confidence score of the generated summary on the scale of 1 to 10 \n"
+      "Do not explain Confidence score or Context. Do not generate anything after generating confidence score.  \n"
+      "If the context provides insufficient information reply `I cannot answer, Please escalate to supervisor or rephrase the question` and don't provide any further information. "
+      "If the context provides sufficient information reply strictly in the format; Answer: ...\n Sources: ...\n Confidence score: ... "
+      "Context:\n {context_str}\n"
+      "Question: {query_str}\n"
+      "Answer: "
+  llm: dkubex
+  llm_url: "http://3.87.157.251:30003/v1/"
+  llmkey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2FuZGVlcC12YW5nYWxhcHVkaSIsInR5cGUiOiJhcGkiLCJpZCI6Ii9kZXBsb3ltZW50L2xsYW1hc2t5LyJ9.L6iC5xwV0CjbNTVKO5DxeoRquMHGz9lpvpLI1KDUWs4"
+  window_size: 2
+  max_tokens: 1024
+
+mlflow:
+  experiment: Eval_rag_answes
+
+huggingface:
+  model: "BAAI/bge-large-en-v1.5"
+
+sky:
+  embedding_url: "http://3.87.157.251:30004/v1/"
+  embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoic2FuZGVlcC12YW5nYWxhcHVkaSIsInR5cGUiOiJhcGkiLCJpZCI6Ii9kZXBsb3ltZW50L3NreWJnZS8ifQ.qCJRZ1xAfYDWhvJDXAcOjjvdqL3wnhWBlfflusojtG8"
+
+# dkubex:
+  #embedding_url: "https://ad46449457b5e4d7fbc99eb01dc7dbc8-ba8182fca0a35e00.elb.us-east-1.amazonaws.com/deployment/115/bgesectionsft2/"
+  #embedding_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoib2NkbGdpdCIsInR5cGUiOiJhcGkiLCJpZCI6Ii9kZXBsb3ltZW50L2JnZXNlY3Rpb25zZnQyLyJ9.8BWx0JPA73dCBL90kuk7pAaMpEsyBPOofBIVSZ3sLRs"
+
+faq:
+  enabled: false
+  threshold: 0.90
+
+vector_search:
+  top_k: 3
+  rerank: true
+  rerank_topk: 5
+  max_sources: 3
+
+weaviate_vectorstore:
+  vectorstore_provider: dkubex
+  url: ""
+  auth_key: ""
+  textkey: 'paperdocs'
+
+# securellm:
+#  appkey: "sk-eak5rxa-27qetja-wdwfygy-ahvgkfa"
+#  dkubex_url: "https://ad46449457b5e4d7fbc99eb01dc7dbc8-ba8182fca0a35e00.elb.us-east-1.amazonaws.com/"
