@@ -15,12 +15,12 @@ parallel_query:
   batch_size: 32
 
 acronym_expander:
-  acr_file: "//home/sandeep-vangalapudi/cron_job_evals/cache_disabled/nv_acronym.json"
+  acr_file: "//home/sandeep-vangalapudi/rag_configs/cache_disabled/nv_acronym.json"
 
 query_rewrite:
   confidence_threshold: 1
-  system_prompt: "/home/sandeep-vangalapudi/cron_job_evals/cache_disabled/nv_system_prompt.txt"
-  user_prompt: "/home/sandeep-vangalapudi/cron_job_evals/cache_disabled/nv-usr-prompt-new.yaml"
+  system_prompt: "/home/sandeep-vangalapudi/cron_job_evals/rag_configs/nv_system_prompt.txt"
+  user_prompt: "/home/sandeep-vangalapudi/cron_job_evals/rag_configs/nv-usr-prompt-new.yaml"
 
 synthesizer:
   use_adjacent_chunks: True

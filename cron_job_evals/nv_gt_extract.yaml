@@ -15,7 +15,7 @@ questions_generator:
 
 ground_truth: /home/sai-bandela/ground_truth15.csv
 
-rag_configuration: /home/sandeep-vangalapudi/cron_job_evals/cache_disabled/nv_rag_qrw.yaml
+rag_configuration: /home/sandeep-vangalapudi/cron_job_evals/rag_configs/nv_rag_qrw.yaml
 
 vectorstore: weaviate_vectorstore
 weaviate_vectorstore:
